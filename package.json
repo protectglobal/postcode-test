@@ -1,0 +1,61 @@
+{
+  "name": "api-test",
+  "private": true,
+  "scripts": {
+    "start": "meteor run"
+  },
+  "dependencies": {
+    "antd": "^2.12.6",
+    "babel-runtime": "^6.20.0",
+    "js-sha256": "^0.5.0",
+    "meteor-node-stubs": "~0.2.4",
+    "react": "^15.6.1",
+    "react-dom": "^15.6.1",
+    "underscore": "^1.8.3"
+  },
+  "eslintConfig": {
+    "plugins": [
+      "meteor"
+    ],
+    "extends": [
+      "airbnb",
+      "plugin:meteor/recommended"
+    ],
+    "rules": {
+      "max-len": 0,
+      "import/no-unresolved": 0,
+      "import/no-extraneous-dependencies": 0,
+      "import/extensions": [
+        "off",
+        "never"
+      ],
+      "no-underscore-dangle": [
+        "error",
+        {
+          "allow": [
+            "_id",
+            "_ensureIndex",
+            "_verifyEmailToken",
+            "_resetPasswordToken",
+            "_name"
+          ]
+        }
+      ]
+    }
+  },
+  "devDependencies": {
+    "babel-eslint": "^7.0.0",
+    "babel-plugin-import": "^1.1.0",
+    "babel-preset-stage-1": "^6.16.0",
+    "deep-freeze": "0.0.1",
+    "eslint": "^2.10.2",
+    "eslint-config-airbnb": "^9.0.1",
+    "eslint-import-resolver-meteor": "^0.4.0",
+    "eslint-plugin-import": "^1.8.0",
+    "eslint-plugin-jsx-a11y": "^1.2.0",
+    "eslint-plugin-meteor": "^3.5.2",
+    "eslint-plugin-react": "^5.1.1",
+    "expect": "^1.20.2",
+    "stylelint": "^5.2.1"
+  }
+}
