@@ -8,7 +8,7 @@ const testPrefix = 'thisIsATest-nfw8ryw4r984rnfry4qS-';
 Meteor.startup(() => {
   console.log('[server] startup');
 
-  /* TestSuit.loginNoCredentials(domainName);
+  TestSuit.loginNoCredentials(domainName);
   TestSuit.loginWrongCredentials(params);
   TestSuit.loginNonHashedPassword(params);
   const loggedInParams = TestSuit.loginRightCredentials(params);
@@ -22,7 +22,7 @@ Meteor.startup(() => {
   TestSuit.insertCustomerEmailIsEmptyString(loggedInParams, testPrefix);
   TestSuit.insertCustomerRightData(loggedInParams, testPrefix);
   // TestSuit.clearTestDB(loggedInParams);
-  TestSuit.logout(loggedInParams); */
+  TestSuit.logout(loggedInParams);
 
   console.log('\n\nAll tests passed!');
 });
