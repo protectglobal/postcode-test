@@ -1,11 +1,11 @@
-import { Meteor } from 'meteor/meteor';
+// import { Meteor } from 'meteor/meteor';
 import { expect, be } from 'meteor/practicalmeteor:chai';
 import { check } from 'meteor/check';
 import TestAPI from './test-api.js';
 
 const sha256 = require('js-sha256');
 
-const { testCode } = Meteor.settings;
+// const { testCode } = Meteor.settings;
 
 // Namespace
 const TestSuit = {};
