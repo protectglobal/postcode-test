@@ -1,4 +1,4 @@
-import React, { PropTypes, Component } from 'react';
+import React, { Component } from 'react';
 import { Meteor } from 'meteor/meteor';
 import { EJSON } from 'meteor/ejson';
 import Form from 'antd/lib/form'; // for js
