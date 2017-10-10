@@ -78,7 +78,7 @@ TestAPI.insertCustomer = ({ domainName, authToken, userId, customer }) => {
   if (userId && userId.trim().length > 0) {
     _.extend(headers, { 'X-User-Id': userId.trim() });
   }
-  const data = customer;
+  const data = Object.assign({}, customer);
 
   // Send HTTP request
   let result = '';

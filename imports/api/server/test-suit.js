@@ -1,8 +1,11 @@
+import { Meteor } from 'meteor/meteor';
 import { expect, be } from 'meteor/practicalmeteor:chai';
 import { check } from 'meteor/check';
 import TestAPI from './test-api.js';
 
 const sha256 = require('js-sha256');
+
+const { testCode } = Meteor.settings;
 
 // Namespace
 const TestSuit = {};
@@ -434,7 +437,7 @@ TestSuit.insertCustomerEmailIsEmptyString = (loggedInParams) => {
 //------------------------------------------------------------------------------
 // INSERT CUSTOMER EMAIL RIGHT DATA:
 //------------------------------------------------------------------------------
-TestSuit.insertCustomerRightData = (loggedInParams, testPrefix) => {
+TestSuit.insertCustomerRightData = (loggedInParams) => {
   // Check args
   check(loggedInParams, {
     domainName: String,
@@ -447,7 +450,7 @@ TestSuit.insertCustomerRightData = (loggedInParams, testPrefix) => {
   console.log('TEST START insertCustomerRightData');
 
   const customer = {
-    name: 'John Smith',
+    name: `John Smith ${testCode}`,
     postalCode: 'WC2N 5DU',
     phoneNumber: '01727 830398',
     email: 'john@example.com',

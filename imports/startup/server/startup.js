@@ -3,12 +3,11 @@ import TestSuit from '../../api/server/test-suit.js';
 
 const { public: { domainName }, email, password } = Meteor.settings;
 const params = { domainName, email, password };
-const testPrefix = 'thisIsATest-nfw8ryw4r984rnfry4qS-';
 
 Meteor.startup(() => {
   console.log('[server] startup');
 
-  /* TestSuit.loginNoCredentials(domainName);
+  TestSuit.loginNoCredentials(domainName);
   TestSuit.loginWrongCredentials(params);
   TestSuit.loginNonHashedPassword(params);
   const loggedInParams = TestSuit.loginRightCredentials(params);
@@ -20,9 +19,9 @@ Meteor.startup(() => {
   TestSuit.insertCustomerPhoneNumberIsEmptyString(loggedInParams);
   TestSuit.insertCustomerEmailIsMissing(loggedInParams);
   TestSuit.insertCustomerEmailIsEmptyString(loggedInParams);
-  TestSuit.insertCustomerRightData(loggedInParams, testPrefix);
-  // TestSuit.clearTestDB(loggedInParams);
-  TestSuit.logout(loggedInParams); */
+  TestSuit.insertCustomerRightData(loggedInParams);
+  TestSuit.clearTestDB(loggedInParams);
+  TestSuit.logout(loggedInParams);
 
   console.log('\n\nAll tests passed!');
 });
