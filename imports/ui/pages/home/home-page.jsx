@@ -26,8 +26,8 @@ class HomePage extends Component {
     super(props);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.state = {
-      userEmail: 'federodes@gmail.com',
-      userPassword: '123456',
+      userEmail: '',
+      userPassword: '',
       customerName: '',
       customerPostalCode: '',
       customerPhoneNumber: '',
