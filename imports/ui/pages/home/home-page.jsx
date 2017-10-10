@@ -1,5 +1,5 @@
-import React, { Component } from 'react';
 import { Meteor } from 'meteor/meteor';
+import React, { Component } from 'react';
 import { EJSON } from 'meteor/ejson';
 import Form from 'antd/lib/form'; // for js
 import 'antd/lib/form/style/css'; // for css
@@ -26,15 +26,17 @@ class HomePage extends Component {
     super(props);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.state = {
-      userEmail: '',
-      userPassword: '',
+      userEmail: 'federodes@gmail.com',
+      userPassword: '123456',
       customerName: '',
       customerPostalCode: '',
       customerPhoneNumber: '',
       customerEmail: '',
       canSubmit: true,
-      error: '',
+      apiError: '',
       apiResponse: '',
+      testError: '',
+      testResponse: '',
     };
   }
 
@@ -55,13 +57,13 @@ class HomePage extends Component {
     this.setState({ canSubmit: false });
 
     // Clear previous API response.and error
-    this.setState({ error: '', apiResponse: '' });
+    this.setState({ apiError: '', apiResponse: '' });
 
     // User email and password are required.
     if (!userEmail || userEmail.trim().length === 0 ||
         !userPassword || userPassword.trim().length === 0) {
       // Display error message.
-      this.setState({ error: 'Please, enter your credentials, both email and password are required' });
+      this.setState({ apiError: 'Please, enter your credentials, both email and password are required' });
 
       // Re-enable submit button
       this.setState({ canSubmit: true });
@@ -82,7 +84,7 @@ class HomePage extends Component {
 
     Meteor.call('insertCustomer', curUser, newCustomer, (err, res) => {
       if (err) {
-        this.setState({ error: err.reason });
+        this.setState({ apiError: err.reason });
       } else {
         this.setState({ apiResponse: res });
       }
@@ -102,7 +104,7 @@ class HomePage extends Component {
       customerPhoneNumber,
       customerEmail,
       canSubmit,
-      error,
+      apiError,
       apiResponse,
     } = this.state;
 
@@ -177,23 +179,25 @@ class HomePage extends Component {
           </Button>
         </Form>
         <hr />
-        <h1>API request login endpoint:</h1>
-        <div className="terminal p1">
-          {`>> curl ${domainName}/api/v1/login/ -d "email=${userEmail}&password=<sha-256-password>&hashed=true"`}
-        </div>
-        <h1>API request insert-customer endpoint:</h1>
-        <div className="terminal p1">
-          {`>> curl -H "Content-Type: application/json" -H "X-Auth-Token: ????"
-          -H "X-User-Id: ????" -X POST -d '{
-            "name":"${customerName || ''}",
-            "postalCode":"${customerPostalCode || ''}",
-            "phoneNumber": "${customerPhoneNumber || ''}",
-            "email": "${customerEmail || ''}"
-          }' ${domainName}/api/v1/insert-customer/`}
-        </div>
-        <h1>API response:</h1>
-        <div className="terminal p1" style={{ minHeight: '34px' }}>
-          {`>> ${(apiResponse && EJSON.stringify(apiResponse, { indent: true })) || error}`}
+        <div className="mb3">
+          <h1>API request login endpoint:</h1>
+          <div className="terminal p1">
+            {`>> curl ${domainName}/api/v1/login/ -d "email=${userEmail}&password=<sha-256-password>&hashed=true"`}
+          </div>
+          <h1>API request insert-customer endpoint:</h1>
+          <div className="terminal p1">
+            {`>> curl -H "Content-Type: application/json" -H "X-Auth-Token: ????"
+            -H "X-User-Id: ????" -X POST -d '{
+              "name":"${customerName || ''}",
+              "postalCode":"${customerPostalCode || ''}",
+              "phoneNumber": "${customerPhoneNumber || ''}",
+              "email": "${customerEmail || ''}"
+            }' ${domainName}/api/v1/insert-customer/`}
+          </div>
+          <h1>API response:</h1>
+          <div className="terminal p1" style={{ minHeight: '34px' }}>
+            {`>> ${(apiResponse && EJSON.stringify(apiResponse, { indent: true })) || apiError}`}
+          </div>
         </div>
       </div>
     );

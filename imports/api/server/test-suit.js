@@ -77,9 +77,6 @@ TestSuit.loginWrongCredentials = ({ domainName, email, password }) => {
 //------------------------------------------------------------------------------
 // LOGIN WRONG CREDENTIALS:
 //------------------------------------------------------------------------------
-/**
-* @param {object} - params = { domainName, email, password }
-*/
 TestSuit.loginNonHashedPassword = ({ domainName, email, password }) => {
   // Check args
   check(domainName, String);
