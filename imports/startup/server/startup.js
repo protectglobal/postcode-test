@@ -1,5 +1,7 @@
 import { Meteor } from 'meteor/meteor';
+import _ from 'underscore';
 import TestSuit from '../../api/server/test-suit.js';
+import PostalCodeInstallerData from '../../api/server/postal-code-installer-data.js';
 
 const { public: { domainName }, email, password } = Meteor.settings;
 const credentials = { domainName, email, password };
@@ -20,7 +22,10 @@ Meteor.startup(() => {
   TestSuit.insertCustomerEmailIsMissing(loggedInParams);
   TestSuit.insertCustomerEmailIsEmptyString(loggedInParams);
   TestSuit.insertCustomerRightData(loggedInParams);
-  TestSuit.clearTestDB(loggedInParams);
+  _.each(PostalCodeInstallerData, (matcher) => {
+    TestSuit.insertCustomerGetInstaller(loggedInParams, matcher);
+  });
+  // TestSuit.clearTestDB(loggedInParams);
   TestSuit.logout(loggedInParams);
 
   console.log('\nAll tests passed!');

@@ -447,8 +447,40 @@ TestSuit.insertCustomerRightData = (loggedInParams) => {
   console.log('TEST START insertCustomerRightData');
 
   const customer = {
-    name: `John Smith ${testCode}`,
+    name: 'John Smith',
     postalCode: 'WC2N 5DU',
+    phoneNumber: '01727 830398',
+    email: 'john@example.com',
+  };
+  const params = Object.assign({}, loggedInParams, { customer });
+  const { status, data } = TestAPI.insertCustomer(params);
+  console.log('data', data);
+
+  expect(status).to.equal(200);
+  expect(data.status).to.equal('success');
+};
+//------------------------------------------------------------------------------
+// INSERT CUSTOMER GET INSTALLER:
+//------------------------------------------------------------------------------
+TestSuit.insertCustomerGetInstaller = (loggedInParams, matcher) => {
+  // Check args
+  check(loggedInParams, {
+    domainName: String,
+    authToken: String,
+    userId: String,
+  });
+  check(matcher, {
+    postalCode: String,
+    companyName: String,
+  });
+
+  console.log('\n');
+  console.log('**************');
+  console.log('TEST START insertCustomerGetInstaller');
+
+  const customer = {
+    name: 'John Smith',
+    postalCode: matcher.postalCode,
     phoneNumber: '01727 830398',
     email: 'john@example.com',
   };
@@ -457,6 +489,7 @@ TestSuit.insertCustomerRightData = (loggedInParams) => {
 
   expect(status).to.equal(200);
   expect(data.status).to.equal('success');
+  expect(JSON.parse(data.message).companyName).to.equal(matcher.companyName);
 };
 //------------------------------------------------------------------------------
 // CLEAR DB:
