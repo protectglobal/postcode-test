@@ -21,4 +21,3 @@ http@1.2.12
 ejson@1.0.13
 practicalmeteor:chai
 dynamic-import
-react-meteor-data

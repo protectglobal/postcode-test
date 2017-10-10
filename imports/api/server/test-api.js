@@ -1,142 +1,56 @@
 import { HTTP } from 'meteor/http';
-
-const sha256 = require('js-sha256');
+import { check, Match } from 'meteor/check';
+import _ from 'underscore';
 
 // Namespace
 const TestAPI = {};
 
 //------------------------------------------------------------------------------
-// LOGIN NO CREDENTIALS
+// LOGIN
 //------------------------------------------------------------------------------
-TestAPI.loginNoCredentials = (domainName) => {
-  /* console.log('\n');
-  console.log('----------------');
-  console.log('TestAPI.loginNoCredentials'); */
+TestAPI.login = ({ domainName, email, password, hashed }) => {
+  // Check args
+  check(domainName, String);
+  check(email, Match.Maybe(String));
+  check(password, Match.Maybe(String));
+  check(hashed, Match.Maybe(Boolean));
 
+  // Prepare HTTP request
   const endpoint = `${domainName}/api/v1/login`;
-  const headers = {
-    'Content-Type': 'application/json',
-  };
+  const headers = { 'Content-Type': 'application/json' };
+
   const data = {};
-  let result = '';
-
-  try {
-    result = HTTP.call('POST', endpoint, { headers, data });
-  } catch (e) {
-    return {
-      status: e.response.statusCode,
-      data: e.response.data,
-    };
+  if (email && email.trim().length > 0) {
+    _.extend(data, { email: email.trim() });
+  }
+  if (password && password.trim().length > 0) {
+    _.extend(data, { password: password.trim() });
+  }
+  if (_.isBoolean(hashed)) {
+    _.extend(data, { hashed });
   }
 
-  return {
-    status: result.statusCode,
-    data: result.data,
-  };
-};
-//------------------------------------------------------------------------------
-// LOGIN WRONG CREDENTIALS
-//------------------------------------------------------------------------------
-TestAPI.loginWrongCredentials = ({ domainName, email, password }) => {
-  /* console.log('\n');
-  console.log('----------------');
-  console.log('TestAPI.loginWrongCredentials'); */
-
-  const endpoint = `${domainName}/api/v1/login`;
-  const headers = {
-    'Content-Type': 'application/json',
-  };
-  const data = {
-    email,
-    password: sha256(`${password}bla`), // wrong password
-    hashed: true,
-  };
+  // Send HTTP request
   let result = '';
-
   try {
     result = HTTP.call('POST', endpoint, { headers, data });
-  } catch (e) {
+  } catch (exc) {
+    const { response } = exc;
     return {
-      status: e.response.statusCode,
-      data: e.response.data,
-    };
-  }
-
-  return {
-    status: result.statusCode,
-    data: result.data,
-  };
-};
-//------------------------------------------------------------------------------
-// LOGIN NON HASHED PASSWORD
-//------------------------------------------------------------------------------
-TestAPI.loginNonHashedPassword = ({ domainName, email, password }) => {
-  /* console.log('\n');
-  console.log('----------------');
-  console.log('TestAPI.loginNonHashedPassword'); */
-
-  const endpoint = `${domainName}/api/v1/login`;
-  const headers = {
-    'Content-Type': 'application/json',
-  };
-  const data = {
-    email,
-    password,
-    // hashed: 'true',
-  };
-  let result = '';
-  console.log(`non-hashed password: ${data.password}`);
-
-  try {
-    result = HTTP.call('POST', endpoint, { headers, data });
-  } catch (e) {
-    return {
-      status: e.response.statusCode,
+      status: (response && response.statusCode) || '',
+      data: (response && response.data) || {},
       authToken: '',
       userId: '',
     };
   }
 
+  // Process result
+  const { statusCode: sc, data: d } = result;
   return {
-    status: result.statusCode,
-    authToken: result.data.data.authToken,
-    userId: result.data.data.userId,
-  };
-};
-//------------------------------------------------------------------------------
-// LOGIN RIGHT CREDENTIALS
-//------------------------------------------------------------------------------
-TestAPI.loginRightCredentials = ({ domainName, email, password }) => {
-  /* console.log('\n');
-  console.log('----------------');
-  console.log('TestAPI.loginRightCredentials'); */
-
-  const endpoint = `${domainName}/api/v1/login`;
-  const headers = {
-    'Content-Type': 'application/json',
-  };
-  const data = {
-    email,
-    password: sha256(password),
-    hashed: true,
-  };
-  let result = '';
-  console.log(`hashed password: ${data.password}`);
-
-  try {
-    result = HTTP.call('POST', endpoint, { headers, data });
-  } catch (e) {
-    return {
-      status: e.response.statusCode,
-      authToken: '',
-      userId: '',
-    };
-  }
-
-  return {
-    status: result.statusCode,
-    authToken: result.data.data.authToken,
-    userId: result.data.data.userId,
+    status: sc,
+    data: d,
+    authToken: (d && d.data && d.data.authToken) || '',
+    userId: (d && d.data && d.data.userId) || '',
   };
 };
 //------------------------------------------------------------------------------
@@ -144,59 +58,83 @@ TestAPI.loginRightCredentials = ({ domainName, email, password }) => {
 //------------------------------------------------------------------------------
 // curl -H "Content-Type: application/json" -H "X-Auth-Token: GYG4QxtEanyD7xSqac8eJKFKjHO-4PMfsEpF_6eQyof" -H "X-User-Id: GeN6cS5m7boGzWE9y" -X POST -d '{"name":"John Smith","postalCode":"XXXX", "phoneNumber": "5434554", "email": "email@example.com"}' http://localhost:3000/api/v1/insert-customer/
 TestAPI.insertCustomer = ({ domainName, authToken, userId, customer }) => {
-  /* console.log('\n');
-  console.log('----------------');
-  console.log('TestAPI.insertCustomer'); */
+  // Check args
+  check(domainName, String);
+  check(authToken, Match.Maybe(String));
+  check(userId, Match.Maybe(String));
+  check(customer, Match.Maybe({
+    name: Match.Maybe(String),
+    postalCode: Match.Maybe(String),
+    phoneNumber: Match.Maybe(String),
+    email: Match.Maybe(String),
+  }));
 
+  // Prepare HTTP request
   const endpoint = `${domainName}/api/v1/insert-customer`;
-  const headers = {
-    'Content-Type': 'application/json',
-    'X-Auth-Token': authToken,
-    'X-User-Id': userId,
-  };
-  const data = customer; // { name, postalCode, phoneNumber, email }
-  let result = '';
+  const headers = { 'Content-Type': 'application/json' };
+  if (authToken && authToken.trim().length > 0) {
+    _.extend(headers, { 'X-Auth-Token': authToken.trim() });
+  }
+  if (userId && userId.trim().length > 0) {
+    _.extend(headers, { 'X-User-Id': userId.trim() });
+  }
+  const data = Object.assign({}, customer);
 
+  // Send HTTP request
+  let result = '';
   try {
     result = HTTP.call('POST', endpoint, { headers, data });
-  } catch (e) {
+  } catch (exc) {
+    const { response } = exc;
     return {
-      status: e.response.statusCode,
-      data: e.response.data,
+      status: (response && response.statusCode) || '',
+      data: (response && response.data) || {},
     };
   }
 
+  // Process result
+  const { statusCode: sc, data: d } = result;
   return {
-    status: result.statusCode,
-    data: result.data,
+    status: sc,
+    data: d,
   };
 };
 //------------------------------------------------------------------------------
 // CLEAR TEST DB
 //------------------------------------------------------------------------------
 TestAPI.clearTestDB = ({ domainName, authToken, userId }) => {
+  // Check args
+  check(domainName, String);
+  check(authToken, Match.Maybe(String));
+  check(userId, Match.Maybe(String));
+
+  // Prepare HTTP request
   const endpoint = `${domainName}/api/v1/clear-test-db`;
-  const headers = {
-    'Content-Type': 'application/json',
-    'X-Auth-Token': authToken,
-    'X-User-Id': userId,
-  };
-  const data = {};
+  const headers = { 'Content-Type': 'application/json' };
+  if (authToken && authToken.trim().length > 0) {
+    _.extend(headers, { 'X-Auth-Token': authToken.trim() });
+  }
+  if (userId && userId.trim().length > 0) {
+    _.extend(headers, { 'X-User-Id': userId.trim() });
+  }
 
+  // Send HTTP request
   let result = '';
-
   try {
-    result = HTTP.call('POST', endpoint, { headers, data });
-  } catch (e) {
+    result = HTTP.call('POST', endpoint, { headers });
+  } catch (exc) {
+    const { response } = exc;
     return {
-      status: e.response.statusCode,
-      data: e.response.data,
+      status: (response && response.statusCode) || '',
+      data: (response && response.data) || '',
     };
   }
 
+  // Process result
+  const { statusCode: sc, data: d } = result;
   return {
-    status: result.statusCode,
-    data: result.data,
+    status: sc,
+    data: d,
   };
 };
 //------------------------------------------------------------------------------
@@ -204,29 +142,38 @@ TestAPI.clearTestDB = ({ domainName, authToken, userId }) => {
 //------------------------------------------------------------------------------
 // curl http://localhost:3000/api/v1/logout -X POST -H "X-Auth-Token: GYG4QxtEanyD7xSqac8eJKFKjHO-4PMfsEpF_6eQyof" -H "X-User-Id: GeN6cS5m7boGzWE9y"
 TestAPI.logout = ({ domainName, authToken, userId }) => {
-  /* console.log('\n');
-  console.log('----------------');
-  console.log('TestAPI.logout'); */
+  // Check args
+  check(domainName, String);
+  check(authToken, Match.Maybe(String));
+  check(userId, Match.Maybe(String));
 
+  // Prepare HTTP request
   const endpoint = `${domainName}/api/v1/logout`;
-  const headers = {
-    'X-Auth-Token': authToken,
-    'X-User-Id': userId,
-  };
-  let result = '';
+  const headers = {};
+  if (authToken && authToken.trim().length > 0) {
+    _.extend(headers, { 'X-Auth-Token': authToken.trim() });
+  }
+  if (userId && userId.trim().length > 0) {
+    _.extend(headers, { 'X-User-Id': userId.trim() });
+  }
 
+  // Send HTTP request
+  let result = '';
   try {
     result = HTTP.call('POST', endpoint, { headers });
-  } catch (e) {
+  } catch (exc) {
+    const { response } = exc;
     return {
-      status: e.response.statusCode,
-      data: e.response.data,
+      status: (response && response.statusCode) || '',
+      data: (response && response.data) || '',
     };
   }
 
+  // Process result
+  const { statusCode: sc, data: d } = result;
   return {
-    status: result.statusCode,
-    data: result.data,
+    status: sc,
+    data: d,
   };
 };
 //------------------------------------------------------------------------------
