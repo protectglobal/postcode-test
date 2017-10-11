@@ -12,6 +12,10 @@ const PostalCodeInstallerData = [
     companyName: 'PROTECT UK',
   },
   {
+    postalCode: 'DE221AJ',
+    companyName: 'PROTECT UK',
+  },
+  {
     postalCode: ' l 1600',
     companyName: 'HESIS',
   },
