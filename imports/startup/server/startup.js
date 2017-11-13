@@ -22,8 +22,17 @@ Meteor.startup(() => {
   TestSuit.insertCustomerEmailIsMissing(loggedInParams);
   TestSuit.insertCustomerEmailIsEmptyString(loggedInParams);
   TestSuit.insertCustomerRightData(loggedInParams);
+  TestSuit.insertCustomerRightDataWithIpAddress(loggedInParams);
+  TestSuit.insertCustomerRightDataWithEmptyIpAddress(loggedInParams);
+  TestSuit.insertCustomerRightDataWithWrongFormatIpAddress(loggedInParams);
   _.each(PostalCodeInstallerData, (matcher) => {
-    TestSuit.insertCustomerGetInstaller(loggedInParams, matcher);
+    TestSuit.insertCustomerWithIpAddressGetInstaller(loggedInParams, matcher);
+  });
+  _.each(PostalCodeInstallerData, (matcher) => {
+    TestSuit.insertCustomerWithoutIpAddressGetInstaller(loggedInParams, matcher);
+  });
+  _.each(PostalCodeInstallerData, (matcher) => {
+    TestSuit.insertCustomerWithEmptyIpAddressGetInstaller(loggedInParams, matcher);
   });
   // TestSuit.clearTestDB(loggedInParams);
   TestSuit.logout(loggedInParams); */

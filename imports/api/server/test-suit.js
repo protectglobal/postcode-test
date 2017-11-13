@@ -432,7 +432,7 @@ TestSuit.insertCustomerEmailIsEmptyString = (loggedInParams) => {
   });
 };
 //------------------------------------------------------------------------------
-// INSERT CUSTOMER EMAIL RIGHT DATA:
+// INSERT CUSTOMER RIGHT DATA:
 //------------------------------------------------------------------------------
 TestSuit.insertCustomerRightData = (loggedInParams) => {
   // Check args
@@ -447,10 +447,10 @@ TestSuit.insertCustomerRightData = (loggedInParams) => {
   console.log('TEST START insertCustomerRightData');
 
   const customer = {
-    name: 'John Smith',
-    postalCode: 'WC2N 5DU',
-    phoneNumber: '01727 830398',
-    email: 'john@example.com',
+    name: 'John Smith ',
+    postalCode: 'WC2N 5DU ',
+    phoneNumber: '01727 830398 ',
+    email: 'john@example.com ',
   };
   const params = Object.assign({}, loggedInParams, { customer });
   const { status, data } = TestAPI.insertCustomer(params);
@@ -460,9 +460,101 @@ TestSuit.insertCustomerRightData = (loggedInParams) => {
   expect(data.status).to.equal('success');
 };
 //------------------------------------------------------------------------------
-// INSERT CUSTOMER GET INSTALLER:
+// INSERT CUSTOMER RIGHT DATA WITH IP ADDRESS:
 //------------------------------------------------------------------------------
-TestSuit.insertCustomerGetInstaller = (loggedInParams, matcher) => {
+TestSuit.insertCustomerRightDataWithIpAddress = (loggedInParams) => {
+  // Check args
+  check(loggedInParams, {
+    domainName: String,
+    authToken: String,
+    userId: String,
+  });
+
+  console.log('\n');
+  console.log('**************');
+  console.log('TEST START insertCustomerRightDataWithIpAddress');
+
+  const customer = {
+    name: 'John Smith ',
+    postalCode: 'WC2N 5DU ',
+    phoneNumber: '01727 830398 ',
+    email: 'john@example.com ',
+    ipAddress: '83.45.148.124',
+  };
+  const params = Object.assign({}, loggedInParams, { customer });
+  const { status, data } = TestAPI.insertCustomer(params);
+  console.log('data', data);
+
+  expect(status).to.equal(200);
+  expect(data.status).to.equal('success');
+};
+//------------------------------------------------------------------------------
+// INSERT CUSTOMER RIGHT DATA WITH EMPTY IP ADDRESS:
+//------------------------------------------------------------------------------
+TestSuit.insertCustomerRightDataWithEmptyIpAddress = (loggedInParams) => {
+  // Check args
+  check(loggedInParams, {
+    domainName: String,
+    authToken: String,
+    userId: String,
+  });
+
+  console.log('\n');
+  console.log('**************');
+  console.log('TEST START insertCustomerRightDataWithEmptyIpAddress');
+
+  const customer = {
+    name: 'John Smith ',
+    postalCode: 'WC2N 5DU ',
+    phoneNumber: '01727 830398 ',
+    email: 'john@example.com ',
+    ipAddress: '',
+  };
+  const params = Object.assign({}, loggedInParams, { customer });
+  const { status, data } = TestAPI.insertCustomer(params);
+  console.log('data', data);
+
+  expect(status).to.equal(200);
+  expect(data.status).to.equal('success');
+};
+//------------------------------------------------------------------------------
+// INSERT CUSTOMER RIGHT DATA WITH WRONG FORMAT IP ADDRESS:
+//------------------------------------------------------------------------------
+TestSuit.insertCustomerRightDataWithWrongFormatIpAddress = (loggedInParams) => {
+  // Check args
+  check(loggedInParams, {
+    domainName: String,
+    authToken: String,
+    userId: String,
+  });
+
+  console.log('\n');
+  console.log('**************');
+  console.log('TEST START insertCustomerRightDataWithWrongFormatIpAddress');
+
+  const customer = {
+    name: 'John Smith ',
+    postalCode: 'WC2N 5DU ',
+    phoneNumber: '01727 830398 ',
+    email: 'john@example.com ',
+    ipAddress: 'DIJROJEORJF',
+  };
+  const params = Object.assign({}, loggedInParams, { customer });
+  const res = TestAPI.insertCustomer(params);
+  expect(
+    res,
+  ).to.deep.equal({
+    status: 404,
+    data: {
+      status: 'fail',
+      message: 'IP is invalid',
+    },
+  });
+};
+//------------------------------------------------------------------------------
+// INSERT CUSTOMER WITH IP ADDRESS, GET INSTALLER:
+//------------------------------------------------------------------------------
+TestSuit.insertCustomerWithIpAddressGetInstaller = (loggedInParams, matcher) => {
   // Check args
   check(loggedInParams, {
     domainName: String,
@@ -476,13 +568,80 @@ TestSuit.insertCustomerGetInstaller = (loggedInParams, matcher) => {
 
   console.log('\n');
   console.log('**************');
-  console.log('TEST START insertCustomerGetInstaller');
+  console.log('TEST START insertCustomerWithIpAddressGetInstaller');
 
   const customer = {
     name: 'John Smith',
     postalCode: matcher.postalCode,
     phoneNumber: '01727 830398',
     email: 'john@example.com',
+    ipAddress: '83.45.148.124',
+  };
+  const params = Object.assign({}, loggedInParams, { customer });
+  const { status, data } = TestAPI.insertCustomer(params);
+
+  expect(status).to.equal(200);
+  expect(data.status).to.equal('success');
+  expect(JSON.parse(data.message).companyName).to.equal(matcher.companyName);
+};
+//------------------------------------------------------------------------------
+// INSERT CUSTOMER WITHOUT IP ADDRESS, GET INSTALLER:
+//------------------------------------------------------------------------------
+TestSuit.insertCustomerWithoutIpAddressGetInstaller = (loggedInParams, matcher) => {
+  // Check args
+  check(loggedInParams, {
+    domainName: String,
+    authToken: String,
+    userId: String,
+  });
+  check(matcher, {
+    postalCode: String,
+    companyName: String,
+  });
+
+  console.log('\n');
+  console.log('**************');
+  console.log('TEST START insertCustomerWithoutIpAddressGetInstaller');
+
+  const customer = {
+    name: 'John Smith',
+    postalCode: matcher.postalCode,
+    phoneNumber: '01727 830398',
+    email: 'john@example.com',
+    // ipAddress: '83.45.148.124',
+  };
+  const params = Object.assign({}, loggedInParams, { customer });
+  const { status, data } = TestAPI.insertCustomer(params);
+
+  expect(status).to.equal(200);
+  expect(data.status).to.equal('success');
+  expect(JSON.parse(data.message).companyName).to.equal(matcher.companyName);
+};
+//------------------------------------------------------------------------------
+// INSERT CUSTOMER WITH EMPTY IP ADDRESS, GET INSTALLER:
+//------------------------------------------------------------------------------
+TestSuit.insertCustomerWithEmptyIpAddressGetInstaller = (loggedInParams, matcher) => {
+  // Check args
+  check(loggedInParams, {
+    domainName: String,
+    authToken: String,
+    userId: String,
+  });
+  check(matcher, {
+    postalCode: String,
+    companyName: String,
+  });
+
+  console.log('\n');
+  console.log('**************');
+  console.log('TEST START insertCustomerWithEmptyIpAddressGetInstaller');
+
+  const customer = {
+    name: 'John Smith',
+    postalCode: matcher.postalCode,
+    phoneNumber: '01727 830398',
+    email: 'john@example.com',
+    ipAddress: '',
   };
   const params = Object.assign({}, loggedInParams, { customer });
   const { status, data } = TestAPI.insertCustomer(params);
