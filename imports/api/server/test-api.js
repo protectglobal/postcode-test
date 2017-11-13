@@ -67,6 +67,7 @@ TestAPI.insertCustomer = ({ domainName, authToken, userId, customer }) => {
     postalCode: Match.Maybe(String),
     phoneNumber: Match.Maybe(String),
     email: Match.Maybe(String),
+    ipAddress: Match.Maybe(String),
   }));
 
   // Prepare HTTP request

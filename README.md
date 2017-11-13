@@ -5,7 +5,7 @@
 2. open the test app settings.json file and setup your email and password
 (the email and password you entered when registering for the Protect Global Admin app);
 3. open a new terminal and run the test app on port 5000 as follows:
-meteor --settings settings.json --port 5000
+meteor --settings settings-test.json --port 5000
 4. check the logs from the test app to see if all the tests were passed.
 
 ## Test Suit

@@ -23,12 +23,14 @@ Meteor.methods({ insertCustomer(curUser, newCustomer) {
     email: Match.Maybe(String),
   });
 
+  const password = sha256(curUser.password);
   const credentials = {
     domainName,
     email: curUser.email,
-    password: sha256(curUser.password),
+    password,
     hashed: true,
   };
+  console.log('hashed psw', password);
 
   // Login into the API
   const { status, authToken, userId } = TestAPI.login(credentials);
